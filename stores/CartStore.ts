@@ -1,3 +1,5 @@
+import { watchDebounced } from "@vueuse/core"
+
 
 export const useCartStore = defineStore("CartStore", () => {
 
@@ -10,10 +12,19 @@ export const useCartStore = defineStore("CartStore", () => {
     const subTotal: any = computed(() => items.value.reduce((acc: number, item: any) => acc + item.item.fields.price * item.amount, 0))
     const taxTotal = computed(() => subTotal.value * taxRate)
     const total = computed(() => taxTotal.value + subTotal.value)
+    const isFirstLoad = ref(false)
 
-    watch(items, () => {
+    watchDebounced(items, () => {
+        if (isFirstLoad.value) return isFirstLoad.value = false
         deskree.user.updateCart(items.value)
-    }, { deep: true })
+    }, { deep: true, debounce: 500 })
+
+    deskree.auth.onAuthStateChange(async (user: any) => {
+        if (!user) return
+        isFirstLoad.value = true
+        const res = await deskree.user.getCart()
+        items.value = res.products
+    })
 
     function addToCart(item: any) {
         const existingItem = items.value.find((i: any) => i.item.sys.id === item.sys.id)

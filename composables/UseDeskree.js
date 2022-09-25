@@ -105,24 +105,21 @@ export function useDeskree() {
     },
     async updateCart(products) {
       if (!loggedInUser.value || !loggedInUser.value.cartId) return;
-
-      console.log(products)
-
       // persist user's cart data to Deskree here
 
+      return dbRestRequest(`/carts/${loggedInUser.value.cartId}`, 'PATCH', {
+        products: JSON.stringify(products)
+      })
+
       // example of what the return from Deskree will look like
-      return {
-        data: {
-          author: "4xsOPtHHiSMI06OHT5gvDnwmLuo2",
-          createdAt: "2022-08-19T06:24:47-05:00",
-          products: JSON.parse("[]"),
-          updatedAt: "2022-08-22T11:03:07-05:00",
-        },
-      };
     },
     async getCart() {
       // get the user's persisted cart from Deskree here
-      return [];
+      if( !loggedInUser.value || !tokenInLocalStorage.value) return;
+
+      const response= await dbRestRequest(`/carts/${loggedInUser.value.cartId}`)
+      response.data.products=JSON.parse(response.data.products)
+      return response.data;
     },
   };
 
@@ -131,10 +128,23 @@ export function useDeskree() {
    */
   const reviews = {
     get(productId) {
+      const where= [{
+        attribute:'product_id',
+        operator:'=',
+        value:productId
+      }]
+
+      return  dbRestRequest(`/reviews?where=${JSON.stringify(where)}`)
       // make request to get reviews for a product here
     },
     submit({ text, rating, title, product_id }) {
       // make request to add a new review here
+      return dbRestRequest(`reviews`,'POST',{
+        product_id,
+        title,
+        rating,
+        text
+      })
     },
   };
 
