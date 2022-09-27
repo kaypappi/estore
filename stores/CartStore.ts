@@ -22,6 +22,11 @@ export const useCartStore = defineStore("CartStore", () => {
     deskree.auth.onAuthStateChange(async (user: any) => {
         if (!user) return
         isFirstLoad.value = true
+        const route= useRouter()
+        if(route.currentRoute.value.path==='/checkout/success'){
+            items.value=[]
+            return
+        }
         const res = await deskree.user.getCart()
         items.value = res.products
     })

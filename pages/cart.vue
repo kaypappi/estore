@@ -4,7 +4,17 @@ const checkAll = ref();
 const cartStore= useCartStore()
 
 async function handleCheckout() {
-  console.log("checking out");
+  const res = await $fetch("/api/cart",{
+    method:"POST",
+    body:{
+      products:cartStore.items.map(product=>({
+        id:product.item.sys.id,
+        quantity:product.amount
+      }))
+    }
+  })
+  window.location=res.url
+  console.log(res);
 }
 
 const removeSelectedItems=()=>{

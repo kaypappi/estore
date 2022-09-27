@@ -1,27 +1,29 @@
 <template>
-  <FormKit type="form" submit-label="Save" @submit="save">
-    <FormKit
-      type="text"
-      name="title"
-      label="Title"
-      validation="required"
-      v-model="form.title"
-    />
-    <FormKit
-      type="textarea"
-      name="message"
-      label="Message"
-      validation="required"
-      v-model="form.text"
-    />
-    <FormKit
-      v-model.number="form.rating"
-      type="range"
-      :label="`Rating ${form.rating}`"
-      min="1"
-      max="5"
-    />
-  </FormKit>
+  <div>
+    <FormKit type="form" submit-label="Save" @submit="save">
+      <FormKit
+        type="text"
+        name="title"
+        label="Title"
+        validation="required"
+        v-model="form.title"
+      />
+      <FormKit
+        type="textarea"
+        name="message"
+        label="Message"
+        validation="required"
+        v-model="form.text"
+      />
+      <FormKit
+        v-model.number="form.rating"
+        type="range"
+        :label="`Rating ${form.rating}`"
+        min="1"
+        max="5"
+      />
+    </FormKit>
+  </div>
 </template>
 
 <script setup lang="ts">

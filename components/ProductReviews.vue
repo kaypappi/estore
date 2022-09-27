@@ -46,13 +46,17 @@
         >
       </div>
 
-      <product-review-form v-if="showReviewForm" :productId="productId" />
+      <transition name="slide-fade" mode="out-in">
+        <product-review-form v-if="showReviewForm" :productId="productId"
+      /></transition>
       <template v-if="showReviews">
-        <product-review-card
-          v-for="{ uid, attributes } in state.data"
-          :key="uid"
-          :review="attributes"
-        />
+        <transition-group name="list" >
+          <product-review-card
+            v-for="{ uid, attributes } in state.data"
+            :key="uid"
+            :review="attributes"
+          />
+        </transition-group>
       </template>
     </template>
   </div>
@@ -97,4 +101,29 @@ onMounted(async () => {
   execute();
 });
 </script>
+<style>
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
+}
+
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+</style>
 
